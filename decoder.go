@@ -10,7 +10,7 @@ import (
 
 const (
 	attrPrefix    = "-"
-	contentPrefix = "#"
+	contentPrefix = "-"
 )
 
 // A Decoder reads and decodes XML objects from an input stream.
@@ -92,12 +92,20 @@ func (dec *Decoder) Decode(root *Node) error {
 			}
 
 			// Extract attributes as children
+			var copyOfNode Node
+			copyOfNode.Children = make(map[string]Nodes)
+
 			for _, a := range se.Attr {
 				if _, ok := dec.excludeAttrs[a.Name.Local]; ok {
 					continue
 				}
-				elem.n.AddChild(dec.attributePrefix+a.Name.Local, &Node{Data: a.Value})
+				copyOfNode.AddChild(a.Name.Local, &Node{Data: a.Value})
+
 			}
+			if len(copyOfNode.Children) > 0 {
+				elem.n.AddChild("$", &copyOfNode)
+			}
+
 		case xml.CharData:
 			// Extract XML data (if any)
 			elem.n.Data = trimNonGraphic(string(xml.CharData(se)))

@@ -47,6 +47,7 @@ func (enc *Encoder) Encode(root *Node) error {
 }
 
 func (enc *Encoder) format(n *Node, lvl int) error {
+
 	if n.IsComplex() {
 		enc.write("{")
 
@@ -54,7 +55,7 @@ func (enc *Encoder) format(n *Node, lvl int) error {
 		if len(n.Data) > 0 {
 			enc.write("\"")
 			enc.write(enc.contentPrefix)
-			enc.write("content")
+			//enc.write("content")
 			enc.write("\": ")
 			enc.write(sanitiseString(n.Data))
 			enc.write(", ")
